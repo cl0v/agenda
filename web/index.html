@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,10 +27,30 @@
   <title>agenda</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyDP9Vtz8039jxIGnMOjsgyfTm1AQPfMfog",
+      authDomain: "agenda-71da3.firebaseapp.com",
+      projectId: "agenda-71da3",
+      storageBucket: "agenda-71da3.appspot.com",
+      messagingSenderId: "136189114982",
+      appId: "1:136189114982:web:a07710948cdc3b42be4ba7",
+      measurementId: "G-XN2Y7NVFY1"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
@@ -95,4 +116,5 @@
     }
   </script>
 </body>
+
 </html>

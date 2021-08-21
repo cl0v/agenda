@@ -1,7 +1,15 @@
+import 'package:agenda/navigator.dart';
+import 'package:agenda/pages/calendar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-void main() {
+import 'pages/create_calendar_data.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   return runApp(CalendarApp());
 }
 
@@ -9,7 +17,11 @@ void main() {
 class CalendarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Calendar Demo', home: MyHomePage());
+    return const MaterialApp(
+      title: 'Agenda',
+      home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 
@@ -23,106 +35,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late final String uid;
+  late Stream<String> streamUid;
+  @override
+  void initState() {
+    if (FirebaseAuth.instance.currentUser?.uid == null) {
+      FirebaseAuth.instance.signInAnonymously();
+      streamUid = Stream.fromFuture(FirebaseAuth.instance
+          .signInAnonymously()
+          .then((value) => value.user?.uid ?? ''));
+    } else
+      uid = FirebaseAuth.instance.currentUser!.uid;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SfCalendar(
-      view: CalendarView.month,
-      dataSource: MeetingDataSource(_getDataSource()),
-      monthViewSettings: const MonthViewSettings(
-          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-    ));
-  }
-
- List<Meeting> _getDataSource() {
-    final List<Meeting> meetings = <Meeting>[];
-    final DateTime today = DateTime.now();
-    final DateTime startTime =
-        DateTime(today.year, today.month, today.day, 9, 0, 0);
-    meetings.add(
-      Meeting(
-        'Livia Amanda Viana\n > Corte de cabelo (Longo)\n > Unhas',
-        startTime,
-        startTime.add(const Duration(hours: 1, minutes: 20)),
-        const Color(0xFF0F8644), // A cor
-        false,
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () => push(context, CrateCalendarDataPage(uid: uid)),
+              icon: Icon(Icons.add))
+        ],
+      ),
+      body: StreamBuilder<String>(
+        stream: streamUid,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data == null) {
+            return Center(
+              child: Text(
+                  'Sem conexão com a internet! Tente novamente mais tarde'),
+            );
+          }
+          uid = snapshot.data!;
+          return CalendarPage(uid: uid);
+        },
       ),
     );
-    return meetings;
   }
-}
-//Mais tarde adicionar valor também (rs30,00)
-// Livia Amanda Viana 
-// Serviços ainda não; Mas vai ter
-// DateTime da hora que será a reunião
-// Datetime da hora que irá finalizar
-
-
-
-/// An object to set the appointment collection data source to calendar, which
-/// used to map the custom appointment data to the calendar appointment, and
-/// allows to add, remove or reset the appointment collection.
-class MeetingDataSource extends CalendarDataSource {
-  /// Creates a meeting data source, which used to set the appointment
-  /// collection to the calendar
-  MeetingDataSource(List<Meeting> source) {
-    appointments = source;
-  }
-
-  @override
-  DateTime getStartTime(int index) {
-    return _getMeetingData(index).from;
-  }
-
-  @override
-  DateTime getEndTime(int index) {
-    return _getMeetingData(index).to;
-  }
-
-  @override
-  String getSubject(int index) {
-    return _getMeetingData(index).eventName;
-  }
-
-  @override
-  Color getColor(int index) {
-    return _getMeetingData(index).background;
-  }
-
-  @override
-  bool isAllDay(int index) {
-    return _getMeetingData(index).isAllDay;
-  }
-
-  Meeting _getMeetingData(int index) {
-    final dynamic meeting = appointments![index];
-    late final Meeting meetingData;
-    if (meeting is Meeting) {
-      meetingData = meeting;
-    }
-
-    return meetingData;
-  }
-}
-
-/// Custom business object class which contains properties to hold the detailed
-/// information about the event data which will be rendered in calendar.
-class Meeting {
-  /// Creates a meeting class with required details.
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  /// Event name which is equivalent to subject property of [Appointment].
-  String eventName;
-
-  /// From which is equivalent to start time property of [Appointment].
-  DateTime from;
-
-  /// To which is equivalent to end time property of [Appointment].
-  DateTime to;
-
-  /// Background which is equivalent to color property of [Appointment].
-  Color background;
-
-  /// IsAllDay which is equivalent to isAllDay property of [Appointment].
-  bool isAllDay;
 }
