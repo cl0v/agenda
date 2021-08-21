@@ -1,9 +1,9 @@
 import 'package:agenda/navigator.dart';
 import 'package:agenda/pages/calendar.dart';
+import 'package:agenda/services/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'pages/create_calendar_data.dart';
 
@@ -40,10 +40,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     if (FirebaseAuth.instance.currentUser?.uid == null) {
-      FirebaseAuth.instance.signInAnonymously();
-      streamUid = Stream.fromFuture(FirebaseAuth.instance
-          .signInAnonymously()
-          .then((value) => value.user?.uid ?? ''));
+      SharedLocalStorageService().get('uid').then((value) {
+        if (value == null) {
+          FirebaseAuth.instance.signInAnonymously();
+          streamUid = Stream.fromFuture(
+              FirebaseAuth.instance.signInAnonymously().then((value) {
+            SharedLocalStorageService().put('uid', value);
+            return value.user?.uid ?? '';
+          }));
+        } else {
+          uid = value;
+        }
+      });
     } else
       uid = FirebaseAuth.instance.currentUser!.uid;
     super.initState();
@@ -71,9 +79,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text(
                   'Sem conexão com a internet! Tente novamente mais tarde'),
             );
+          } else if (snapshot.data == null) {
+            uid = snapshot.data!;
+            return CalendarPage(uid: uid);
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
-          uid = snapshot.data!;
-          return CalendarPage(uid: uid);
         },
       ),
     );
