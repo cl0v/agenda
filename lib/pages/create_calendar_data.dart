@@ -1,5 +1,7 @@
 import 'package:agenda/models/calendar_data.dart';
+import 'package:agenda/models/service.dart';
 import 'package:agenda/navigator.dart';
+import 'package:agenda/pages/service_list.dart';
 import 'package:agenda/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +17,11 @@ class CrateCalendarDataPage extends StatefulWidget {
 class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
   final TextEditingController clienteController = TextEditingController();
 
-  final TextEditingController servicoController = TextEditingController();
-
   final TextEditingController tempoController = TextEditingController();
 
   TimeOfDay startTime = TimeOfDay(hour: 10, minute: 0);
+
+   String selectedService = 'Selecionar serviço';
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
           final c = CalendarDataModel(
               uid: widget.uid,
               name: clienteController.text,
-              servico: servicoController.text,
+              servico: selectedService,
               start: start,
               end: end);
 
@@ -51,11 +53,16 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
               decoration: InputDecoration(
                   hintText: 'Nome da pessoa', labelText: 'Nome do cliente'),
             ),
-            TextFormField(
-              controller: servicoController,
-              decoration: InputDecoration(
-                  hintText: 'Corte de cabelo',
-                  labelText: 'Serviço que será realizado'),
+            ListTile(
+              onTap: () async {
+                ServiceModel? r =
+                    await push(context, ServiceListPage(uid: widget.uid));
+
+                setState(() {
+                  selectedService = r?.title ?? selectedService;
+                });
+              },
+              title: Text(selectedService),
             ),
             TextFormField(
               controller: tempoController,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-push(context, p) =>
+Future<dynamic> push(context, p) =>
     Navigator.of(context).push(MaterialPageRoute(builder: (c) => p));
 
-pop(context) => Navigator.of(context).pop();
+pop(context, [r]) => Navigator.of(context).pop(r);

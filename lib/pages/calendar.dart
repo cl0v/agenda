@@ -17,7 +17,6 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
-    print(widget.uid);
     super.initState();
   }
 
@@ -46,9 +45,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   List<Meeting> _getDataSource(List<CalendarDataModel> list) {
     final List<Meeting> meetings = <Meeting>[];
-    final DateTime today = DateTime.now();
-    final DateTime startTime =
-        DateTime(today.year, today.month, today.day, 9, 0, 0);
     list.forEach((element) {
       meetings.add(
         Meeting(
