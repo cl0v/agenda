@@ -35,6 +35,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
           return SfCalendar(
             view: CalendarView.day,
+            scheduleViewSettings: ScheduleViewSettings(
+              appointmentItemHeight: 100
+            ),
             dataSource: MeetingDataSource(_getDataSource(l)),
             monthViewSettings: const MonthViewSettings(
               appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
@@ -48,7 +51,7 @@ class _CalendarPageState extends State<CalendarPage> {
     list.forEach((element) {
       meetings.add(
         Meeting(
-          '${element.name}\n >${element.servico}',
+          element.text,
           element.start,
           element.end,
           const Color(0xFF0F8644), // A cor

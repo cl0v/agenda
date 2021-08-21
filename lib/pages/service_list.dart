@@ -1,5 +1,5 @@
 import 'package:agenda/models/service.dart';
-import 'package:agenda/navigator.dart';
+import 'package:agenda/utils/navigator.dart';
 import 'package:flutter/material.dart';
 
 import 'package:agenda/repositories/service.dart';

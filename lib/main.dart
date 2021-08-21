@@ -1,11 +1,13 @@
-import 'package:agenda/navigator.dart';
+import 'package:agenda/utils/navigator.dart';
 import 'package:agenda/pages/calendar.dart';
-import 'package:agenda/services/shared_preferences.dart';
+import 'package:agenda/user_auth.dart';
+import 'package:agenda/widgets/auth_popup.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/create_calendar_data.dart';
+
+//TODO: Testar se no celular ta criando toda hora o user anonimo
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +15,6 @@ Future<void> main() async {
   return runApp(CalendarApp());
 }
 
-/// The app which hosts the home page which contains the calendar on it.
 class CalendarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,7 @@ class CalendarApp extends StatelessWidget {
   }
 }
 
-/// The hove page which hosts the calendar
 class MyHomePage extends StatefulWidget {
-  /// Creates the home page to display teh calendar widget.
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
@@ -35,60 +34,76 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final String uid;
-  late Stream<String> streamUid;
+  final auth = UserAuth();
+
   @override
-  void initState() {
-    if (FirebaseAuth.instance.currentUser?.uid == null) {
-      SharedLocalStorageService().get('uid').then((value) {
-        if (value == null) {
-          FirebaseAuth.instance.signInAnonymously();
-          streamUid = Stream.fromFuture(
-              FirebaseAuth.instance.signInAnonymously().then((value) {
-            SharedLocalStorageService().put('uid', value);
-            return value.user?.uid ?? '';
-          }));
-        } else {
-          uid = value;
-        }
-      });
-    } else
-      uid = FirebaseAuth.instance.currentUser!.uid;
-    super.initState();
+  void dispose() {
+    auth.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () => push(context, CrateCalendarDataPage(uid: uid)),
-              icon: Icon(Icons.add))
-        ],
-      ),
-      body: StreamBuilder<String>(
-        stream: streamUid,
+    return StreamBuilder<String?>(
+        stream: auth.stream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.data == null) {
-            return Center(
-              child: Text(
-                  'Sem conexão com a internet! Tente novamente mais tarde'),
-            );
-          } else if (snapshot.data == null) {
-            uid = snapshot.data!;
-            return CalendarPage(uid: uid);
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
+          // if (!snapshot.hasData) return Text('Verifique a internet');
+          print(snapshot.data);
+          if (snapshot.hasData && snapshot.data != null) {
+            final uid = snapshot.data!;
+            return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        auth.signOut();
+                      },
+                      icon: Icon(Icons.exit_to_app)),
+                  IconButton(
+                    onPressed: () =>
+                        push(context, CrateCalendarDataPage(uid: uid)),
+                    icon: Icon(
+                      Icons.add,
+                    ),
+                  )
+                ],
+              ),
+              body: CalendarPage(uid: uid),
             );
           }
-        },
-      ),
-    );
+          return Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                child: Text('Entrar'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AuthPopUp(
+                        auth:auth,
+                      );
+                    },
+                  );
+                },
+              ),
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AuthPopUp(
+                        auth:auth,
+                        login: false,
+                      );
+                    },
+                  );
+                },
+                child: Text('Cadastrar'),
+              )
+            ],
+          ));
+        });
   }
 }

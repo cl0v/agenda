@@ -19,6 +19,8 @@ class CalendarDataModel {
     required this.end,
   });
 
+  String get text => '$name\n > $servico';
+
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,

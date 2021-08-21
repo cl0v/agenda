@@ -1,6 +1,6 @@
 import 'package:agenda/models/calendar_data.dart';
 import 'package:agenda/models/service.dart';
-import 'package:agenda/navigator.dart';
+import 'package:agenda/utils/navigator.dart';
 import 'package:agenda/pages/service_list.dart';
 import 'package:agenda/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +26,7 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Adicionar'),),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           final DateTime start = timeOfDayToDateTime(startTime);

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "136189114982",
+    "project_id": "agenda-71da3",
+    "storage_bucket": "agenda-71da3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136189114982:android:0f2948f253651460be4ba7",
+        "android_client_info": {
+          "package_name": "com.igenda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "136189114982-btm9n03ud01et8h1qhnddvk7i0a3dvuo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFblK-0aoiaJmtRt9Fw2VVOb2t5jpr6YE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136189114982-btm9n03ud01et8h1qhnddvk7i0a3dvuo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
