@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:agenda/simple_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class UserAuth extends SimpleBloc<String?> {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -21,6 +20,8 @@ class UserAuth extends SimpleBloc<String?> {
 
   fetchLogedUserId() {
     String? r = auth.currentUser?.uid;
+    print('Tentando encontrar user...');
+    print(r);
     super.add(r);
   }
 

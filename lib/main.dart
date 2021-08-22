@@ -37,6 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final auth = UserAuth();
 
   @override
+  void initState() {
+    auth.fetchLogedUserId();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     auth.dispose();
     super.dispose();
@@ -82,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AuthPopUp(
-                        auth:auth,
+                        auth: auth,
                       );
                     },
                   );
@@ -94,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AuthPopUp(
-                        auth:auth,
+                        auth: auth,
                         login: false,
                       );
                     },

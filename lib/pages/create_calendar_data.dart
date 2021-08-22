@@ -5,7 +5,6 @@ import 'package:agenda/pages/service_list.dart';
 import 'package:agenda/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
 
-// Hoje é so isso
 class CrateCalendarDataPage extends StatefulWidget {
   final String uid;
 
@@ -21,12 +20,14 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
 
   TimeOfDay startTime = TimeOfDay(hour: 10, minute: 0);
 
-   String selectedService = 'Selecionar serviço';
+  List<ServiceModel> selectedService = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Adicionar'),),
+      appBar: AppBar(
+        title: Text('Adicionar'),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           final DateTime start = timeOfDayToDateTime(startTime);
@@ -36,7 +37,7 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
           final c = CalendarDataModel(
               uid: widget.uid,
               name: clienteController.text,
-              servico: selectedService,
+              servicos: selectedService,
               start: start,
               end: end);
 
@@ -56,14 +57,19 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
             ),
             ListTile(
               onTap: () async {
-                ServiceModel? r =
-                    await push(context, ServiceListPage(uid: widget.uid));
+                List<ServiceModel> r = await push(
+                        context,
+                        ServiceListPage(
+                          uid: widget.uid,
+                          selectedServices: selectedService,
+                        )) ??
+                    [];
 
-                setState(() {
-                  selectedService = r?.title ?? selectedService;
-                });
+                // setState(() {
+                //   selectedService = r ?? selectedService;
+                // });
               },
-              title: Text(selectedService),
+              title: Text('Toque para selecionar servicos'),
             ),
             TextFormField(
               controller: tempoController,

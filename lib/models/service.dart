@@ -24,4 +24,15 @@ class ServiceModel {
   String toJson() => json.encode(toMap());
 
   factory ServiceModel.fromJson(String source) => ServiceModel.fromMap(json.decode(source));
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is ServiceModel &&
+      other.title == title;
+  }
+
+  @override
+  int get hashCode => title.hashCode;
 }

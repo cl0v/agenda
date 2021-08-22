@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:agenda/models/service.dart';
+
 class CalendarDataModel {
   // Não preciso enviar para servidor, é dmais po... (mas vai ajudar pakaraio a coletar dados)
   // A melhor forma de coletar dados é por servidor, ja que nao tenho contatos para dar feedback
@@ -7,25 +9,30 @@ class CalendarDataModel {
   // NÃO ENTRAR NO CONSOLE DO FIREBASE DEPOIS QUE LANÇAR O APP. (Dados sensiveis estão lá)
   String uid;
   String name;
-  String servico;
+  List<ServiceModel> servicos;
   DateTime start;
   DateTime end;
 
   CalendarDataModel({
     required this.uid,
     required this.name,
-    required this.servico,
+    required this.servicos,
     required this.start,
     required this.end,
   });
 
-  String get text => '$name\n > $servico';
+  String get text {
+    List<String> i = servicos.map((e) => e.title).toList();
+    String t = i.join('\n > ');
+     
+    return '$name \n > $t';
+  }
 
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'name': name,
-      'servico': servico,
+      'servicos': servicos.map((x) => x.toMap()).toList(),
       'start': start.millisecondsSinceEpoch,
       'end': end.millisecondsSinceEpoch,
     };
@@ -35,7 +42,8 @@ class CalendarDataModel {
     return CalendarDataModel(
       uid: map['uid'],
       name: map['name'],
-      servico: map['servico'],
+      servicos: List<ServiceModel>.from(
+          map['servicos']?.map((x) => ServiceModel.fromMap(x))),
       start: DateTime.fromMillisecondsSinceEpoch(map['start']),
       end: DateTime.fromMillisecondsSinceEpoch(map['end']),
     );

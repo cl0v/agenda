@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:agenda/repositories/service.dart';
 
 class ServiceListPage extends StatefulWidget {
-  const ServiceListPage({Key? key, required this.uid}) : super(key: key);
+  const ServiceListPage(
+      {Key? key, required this.uid, this.selectedServices = const []})
+      : super(key: key);
   final String uid;
+  final List<ServiceModel> selectedServices;
 
   @override
   _ServiceListPageState createState() => _ServiceListPageState();
@@ -14,21 +17,38 @@ class ServiceListPage extends StatefulWidget {
 
 class _ServiceListPageState extends State<ServiceListPage> {
   late final ServiceRepository repository;
+
+  List<ServiceModel> selectedServices = [];
+
+  onAdd(ServiceModel e) {
+    selectedServices.add(e);
+  }
+
+  onRemove(ServiceModel e) {
+    selectedServices.add(e);
+  }
+
   @override
   void initState() {
     repository = ServiceRepository(widget.uid);
+    selectedServices = widget.selectedServices;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          pop(context, selectedServices);
+        },
+        child: Icon(Icons.check),
+      ),
       appBar: AppBar(
         title: Text('Serviços'),
         actions: [
           IconButton(
               onPressed: () {
-                //TODO: Adicionar servico no pop
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -49,14 +69,13 @@ class _ServiceListPageState extends State<ServiceListPage> {
                 child: CircularProgressIndicator(),
               );
             }
-            final List<ServiceModel> l = snapshot.data!;
+            final List<ServiceModel> l = snapshot.data ?? [];
             return ListView(
               children: l
-                  .map((e) => ListTile(
-                        onTap: () {
-                          pop(context, e);
-                        },
-                        title: Text(e.title),
+                  .map((e) => ServiceCheckboxTile(
+                        service: e,
+                        onAdd: () => onAdd(e),
+                        onRemove: () => onRemove(e),
                       ))
                   .toList(),
             );
@@ -64,6 +83,42 @@ class _ServiceListPageState extends State<ServiceListPage> {
         ),
       ),
     );
+  }
+}
+
+class ServiceCheckboxTile extends StatefulWidget {
+  const ServiceCheckboxTile(
+      {Key? key,
+      required this.service,
+      required this.onAdd,
+      required this.onRemove})
+      : super(key: key);
+  final ServiceModel service;
+  final VoidCallback onAdd;
+  final VoidCallback onRemove;
+
+  @override
+  _ServiceCheckboxTileState createState() => _ServiceCheckboxTileState();
+}
+
+class _ServiceCheckboxTileState extends State<ServiceCheckboxTile> {
+  bool _checked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(widget.service.title),
+      trailing: Checkbox(
+        onChanged: (v) {
+          if (v != null) v ? widget.onAdd() : widget.onRemove();
+          setState(() {
+            _checked = v ?? _checked;
+          });
+        },
+        value: _checked,
+      ),
+    );
+    ;
   }
 }
 

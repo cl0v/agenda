@@ -37,6 +37,7 @@ class _CalendarPageState extends State<CalendarPage> {
             view: CalendarView.day,
             scheduleViewSettings: ScheduleViewSettings(
               appointmentItemHeight: 100
+              //TODO: Testar aumento dos itens
             ),
             dataSource: MeetingDataSource(_getDataSource(l)),
             monthViewSettings: const MonthViewSettings(
