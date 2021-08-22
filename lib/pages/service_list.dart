@@ -73,6 +73,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
             return ListView(
               children: l
                   .map((e) => ServiceCheckboxTile(
+                    repository: repository,
                         service: e,
                         onAdd: () => onAdd(e),
                         onRemove: () => onRemove(e),
@@ -91,11 +92,14 @@ class ServiceCheckboxTile extends StatefulWidget {
       {Key? key,
       required this.service,
       required this.onAdd,
+      required this.repository,
       required this.onRemove})
       : super(key: key);
   final ServiceModel service;
   final VoidCallback onAdd;
   final VoidCallback onRemove;
+  final ServiceRepository repository;
+
 
   @override
   _ServiceCheckboxTileState createState() => _ServiceCheckboxTileState();
@@ -107,7 +111,26 @@ class _ServiceCheckboxTileState extends State<ServiceCheckboxTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: (){
+        showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CreateServicePopUp(
+                        repository: widget.repository,
+                        // serviceModel: widget.service,
+                      );
+                    });
+      },
+      leading: widget.service.value == -1
+          ? Icon(
+              Icons.warning,
+              color: Colors.yellow[800],
+            )
+          : null,
       title: Text(widget.service.title),
+      subtitle: Text(widget.service.value == -1
+          ? 'Não fornecido'
+          : widget.service.value.toStringAsFixed(2)),
       trailing: Checkbox(
         onChanged: (v) {
           if (v != null) v ? widget.onAdd() : widget.onRemove();
@@ -118,7 +141,6 @@ class _ServiceCheckboxTileState extends State<ServiceCheckboxTile> {
         value: _checked,
       ),
     );
-    ;
   }
 }
 
@@ -126,17 +148,24 @@ class CreateServicePopUp extends StatelessWidget {
   CreateServicePopUp({
     Key? key,
     required this.repository,
+    // this.serviceModel,
   }) : super(key: key);
   final ServiceRepository repository;
-
+  // final ServiceModel? serviceModel;
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController titleController = TextEditingController();
-  // final TextEditingController valueController = TextEditingController();
+  TextEditingController get titleController =>
+      TextEditingController(
+        // text: serviceModel?.title
+        );
+  TextEditingController get valueController =>
+      TextEditingController(
+        // text: serviceModel?.value.toString()
+        );
 
   ServiceModel get service => ServiceModel(
         title: titleController.text,
-        // value: double.parse(valueController.text),
+        value: double.parse(valueController.text),
       );
 
   @override
@@ -165,15 +194,18 @@ class CreateServicePopUp extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Titulo'),
                     controller: titleController,
                   ),
                 ),
-                // Padding(
-                //   padding: EdgeInsets.all(8.0),
-                //   child: TextFormField(
-                //     controller: valueController,
-                //   ),
-                // ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: 'Valor'),
+                    controller: valueController,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
