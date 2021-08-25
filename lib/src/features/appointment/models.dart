@@ -1,3 +1,6 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Appointment {
   final DateTime day;
   final String cliente;
@@ -16,6 +19,14 @@ class Appointment {
 
   String get horario => '${day.hour} : ${day.minute}';
 
+
+  Map<String, dynamic> toMap() {
+    return {
+      'day': Timestamp.fromDate(day) ,
+      'cliente': cliente,
+      'listaDosServicosEscolhidos': listaDosServicosEscolhidos,
+    };
+  }
 }
 
 

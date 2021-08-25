@@ -6,9 +6,8 @@ import 'package:agenda/src/features/service/repositories/service.dart';
 
 class ServiceListPage extends StatefulWidget {
   const ServiceListPage(
-      {Key? key, required this.uid, this.selectedServices = const []})
+      {Key? key, this.selectedServices = const []})
       : super(key: key);
-  final String uid;
   final List<ServiceModel> selectedServices;
 
   @override
@@ -30,7 +29,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
 
   @override
   void initState() {
-    repository = ServiceRepository(widget.uid);
+    
     selectedServices = widget.selectedServices;
     super.initState();
   }

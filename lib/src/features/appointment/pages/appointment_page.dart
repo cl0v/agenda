@@ -2,7 +2,7 @@ import 'package:agenda/src/features/appointment/widgets/appointment_tile.dart';
 import 'package:agenda/utils/navigator.dart';
 import 'package:flutter/material.dart';
 
-import '../appointment_model.dart';
+import '../models.dart';
 import 'create_appointment_page.dart';
 
 class TodayAppointmentListPage extends StatefulWidget {

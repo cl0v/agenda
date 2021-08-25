@@ -58,7 +58,6 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
                 List<ServiceModel> r = await push(
                         context,
                         ServiceListPage(
-                          uid: 'widget.uid',
                           selectedServices: selectedService,
                         )) ??
                     [];

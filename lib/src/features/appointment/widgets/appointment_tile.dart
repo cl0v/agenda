@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../appointment_model.dart';
+import '../models.dart';
 
 class AppointmentTile extends StatelessWidget {
   final Appointment agendamento;
