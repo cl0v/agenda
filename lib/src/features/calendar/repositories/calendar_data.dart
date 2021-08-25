@@ -1,4 +1,4 @@
-import 'package:agenda/models/calendar_data.dart';
+import 'package:agenda/src/features/calendar/models/calendar_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 const String calendarDataFirestoreCollection = 'calendarData';

@@ -1,4 +1,4 @@
-import 'package:agenda/models/service.dart';
+import 'package:agenda/src/features/service/models/service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 const String serviceFirestoreCollection = 'service';

@@ -1,14 +1,12 @@
-import 'package:agenda/models/calendar_data.dart';
-import 'package:agenda/models/service.dart';
+import 'package:agenda/src/features/calendar/models/calendar_data.dart';
+import 'package:agenda/src/features/service/models/service.dart';
 import 'package:agenda/utils/navigator.dart';
-import 'package:agenda/pages/service_list.dart';
-import 'package:agenda/repositories/calendar_data.dart';
+import 'package:agenda/src/features/service/pages/service_list.dart';
+import 'package:agenda/src/features/calendar/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
 
 class CrateCalendarDataPage extends StatefulWidget {
-  final String uid;
 
-  const CrateCalendarDataPage({Key? key, required this.uid}) : super(key: key);
   @override
   _CrateCalendarDataPageState createState() => _CrateCalendarDataPageState();
 }
@@ -35,7 +33,7 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
               .add(Duration(minutes: int.parse(tempoController.text)));
 
           final c = CalendarDataModel(
-              uid: widget.uid,
+              uid: 'widget.uid',
               name: clienteController.text,
               servicos: selectedService,
               start: start,
@@ -60,7 +58,7 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
                 List<ServiceModel> r = await push(
                         context,
                         ServiceListPage(
-                          uid: widget.uid,
+                          uid: 'widget.uid',
                           selectedServices: selectedService,
                         )) ??
                     [];

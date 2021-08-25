@@ -1,11 +1,13 @@
 import 'package:agenda/utils/navigator.dart';
-import 'package:agenda/pages/calendar.dart';
+import 'package:agenda/src/features/calendar/pages/calendar.dart';
 import 'package:agenda/user_auth.dart';
 import 'package:agenda/widgets/auth_popup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'pages/create_calendar_data.dart';
+import 'src/features/appointment/pages/appointment_page.dart';
+import 'src/features/calendar/pages/create_calendar_data.dart';
 
 //TODO: Testar se no celular ta criando toda hora o user anonimo
 
@@ -18,10 +20,23 @@ Future<void> main() async {
 class CalendarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    
     return const MaterialApp(
       title: 'Agenda',
-      home: MyHomePage(),
+      home: kIsWeb && !kDebugMode ? AppDownloadBannerPage() : TodayAppointmentListPage(),
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+class AppDownloadBannerPage extends StatelessWidget {
+  const AppDownloadBannerPage({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(alignment: Alignment.center,child: ElevatedButton(child: Text('Baixar') , onPressed: (){
+        // TODO: Vai pras lojas
+      },),),
     );
   }
 }
@@ -67,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: Icon(Icons.exit_to_app)),
                   IconButton(
                     onPressed: () =>
-                        push(context, CrateCalendarDataPage(uid: uid)),
+                        push(context, CrateCalendarDataPage()),
                     icon: Icon(
                       Icons.add,
                     ),

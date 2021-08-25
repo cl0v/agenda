@@ -1,5 +1,5 @@
-import 'package:agenda/models/calendar_data.dart';
-import 'package:agenda/repositories/calendar_data.dart';
+import 'package:agenda/src/features/calendar/models/calendar_data.dart';
+import 'package:agenda/src/features/calendar/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 

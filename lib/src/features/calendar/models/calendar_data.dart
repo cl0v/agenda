@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:agenda/models/service.dart';
+import 'package:agenda/src/features/service/models/service.dart';
 
 class CalendarDataModel {
   // Não preciso enviar para servidor, é dmais po... (mas vai ajudar pakaraio a coletar dados)
