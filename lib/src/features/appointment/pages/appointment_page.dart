@@ -1,3 +1,5 @@
+import 'package:agenda/authenticator.dart';
+import 'package:agenda/src/features/appointment/repositories.dart';
 import 'package:agenda/src/features/appointment/widgets/appointment_tile.dart';
 import 'package:agenda/utils/navigator.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,22 @@ class _TodayAppointmentListPageState extends State<TodayAppointmentListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: l.map((e) => AppointmentTile(agendamento: e)).toList(),
-      ),
+      body: StreamBuilder<List<Appointment>>(
+          stream: AppointmentRepository.todayAppointments(
+              Authenticator.of(context).id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              return ListView(
+                children: snapshot.data
+                        ?.map((e) => AppointmentTile(agendamento: e))
+                        .toList() ??
+                    [],
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => push(context, CreateAppointmentPage()),
         tooltip: 'Adicionar atendimento',

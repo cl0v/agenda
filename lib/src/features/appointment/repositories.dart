@@ -12,31 +12,28 @@ const String appointmentFirestoreCollection = 'appointment';
 // }
 
 class AppointmentRepository {
-  @override
-  static Future<void> create(String userId, Appointment m) {
+  static Future<void> create(String uid, Appointment m) {
+    //TODO: Adicionar uma collection do dia, que auxiliará na leitura(Evitar multiplas leituras para uma unica página) Basta ordenar pelo dia
     return FirebaseFirestore.instance
         .collection('user')
-        .doc(userId)
+        .doc(uid)
         .collection(appointmentFirestoreCollection)
         .add(m.toMap());
   }
 
-  @override
-  Future<void> delete(String id) {
-    // TODO: implement delete
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Appointment> read(String id) {
-    // TODO: implement read
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> update(Appointment m) {
-    // TODO: implement update
-    throw UnimplementedError();
+  static Stream<List<Appointment>> todayAppointments(String uid) {
+    
+    //TODO: Trocar isso para stream
+    return FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .collection(appointmentFirestoreCollection)
+        .where('date.day', isEqualTo: DateTime.now().day)
+        .where('date.month', isEqualTo: DateTime.now().month)
+        .where('date.year', isEqualTo: DateTime.now().year)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Appointment.fromMap(e.data())).toList());
   }
 }
 

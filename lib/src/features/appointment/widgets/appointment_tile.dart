@@ -16,8 +16,8 @@ class AppointmentTile extends StatelessWidget {
     return Card(
       child: ExpansionTile(
         // title: Center(child: Text('R\$${agendamento.valor}')),
-        title: Center(child: Text(agendamento.cliente)),
-        leading: Text(agendamento.horario),
+        title: Center(child: Text(agendamento.clientName)),
+        leading: Text(agendamento.horario(context)),
         trailing: Icon(Icons.info),
         // children: [
         //   ...agendamento.listaDosServicosEscolhidos.map((e) => Text(e)).toList()

@@ -20,12 +20,14 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
   Appointment _appointment() {
     final _day = DateTime(day.year, day.month, day.day, time.hour, time.minute);
 
-    return Appointment(_day, nameController.text, ['nenhum']);
+    return Appointment(
+        Horario.fromDateTime(_day), nameController.text, ['nenhum']);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Agendamento'),),
       floatingActionButton: CreateAppointmentButton(
         appointment: _appointment,
       ),

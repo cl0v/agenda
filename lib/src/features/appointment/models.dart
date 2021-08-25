@@ -1,34 +1,92 @@
+import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Appointment {
-  final DateTime day;
-  final String cliente;
-  final List<String>
-      listaDosServicosEscolhidos; //A pessoa não precisa saber detalhe do agendamento (Valor de cada item e tempo gasto)
+  //TODO: Criar nome estatico para se referir la no firestore
+
+  final Horario date; // Esse carinha não vai rolar, pois
+  final String clientName;
+  final List<String> serviceList;
+  //A pessoa não precisa saber detalhe do agendamento (Valor de cada item e tempo gasto)
 
   // String _valor;
 
-
   Appointment(
-    this.day,
-    this.cliente,
     // this._valor,
-    this.listaDosServicosEscolhidos,
+    this.date,
+    this.clientName,
+    this.serviceList,
   );
-
-  String get horario => '${day.hour} : ${day.minute}';
 
 
   Map<String, dynamic> toMap() {
     return {
-      'day': Timestamp.fromDate(day) ,
-      'cliente': cliente,
-      'listaDosServicosEscolhidos': listaDosServicosEscolhidos,
+      'date': date.toMap(),
+      'clientName': clientName,
+      'serviceList': serviceList,
     };
   }
+
+  String  horario(context) => TimeOfDay(hour: date.hour, minute: date.minute).format(context);
+
+  factory Appointment.fromMap(Map<String, dynamic> map) {
+    return Appointment(
+      Horario.fromMap(map['date']),
+      map['clientName'],
+      List<String>.from(map['serviceList']),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Appointment.fromJson(String source) =>
+      Appointment.fromMap(json.decode(source));
 }
 
+class Horario {
+  int year;
+  int month;
+  int day;
+  int hour;
+  int minute;
+
+  Horario({
+    required this.year,
+    required this.month,
+    required this.day,
+    required this.hour,
+    required this.minute,
+  });
+
+  factory Horario.fromDateTime(DateTime date) => Horario(
+        year: date.year,
+        month: date.month,
+        day: date.day,
+        hour: date.hour,
+        minute: date.minute,
+      );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'year': year,
+      'month': month,
+      'day': day,
+      'hour': hour,
+      'minute': minute,
+    };
+  }
+
+  factory Horario.fromMap(Map<String, dynamic> map) {
+    return Horario(
+      year: map['year'],
+      month: map['month'],
+      day: map['day'],
+      hour: map['hour'],
+      minute: map['minute'],
+    );
+  }
+}
 
 List<Appointment> l = [
   // Appointment('11:00', 'Renata', '30,00', [

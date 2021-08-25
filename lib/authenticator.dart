@@ -7,9 +7,11 @@ class Authenticator extends InheritedWidget {
     required Widget child,
   }) : super(child: child) {
     // _id = FirebaseAuth.instance.currentUser!.uid;
-    _id = 'MeuIdBarril';
+    // Deixar o id do user como o uid mesmo, vai facilitar tudo, futuramente,
+    // se necessario mudar.
+    // _id = 'Meunovoid';
   }
-  late final String _id;
+   final String _id;
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
