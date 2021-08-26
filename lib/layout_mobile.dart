@@ -1,8 +1,7 @@
 import 'package:agenda/pages/agenda.dart';
-import 'package:agenda/pages/history.dart';
 import 'package:agenda/pages/profile.dart';
 import 'package:agenda/pages/services.dart';
-import 'package:agenda/src/features/service/widgets/list_tile.dart';
+import 'package:agenda/src/features/service/widgets/create_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';
@@ -62,7 +61,7 @@ class _MobileLayoutState extends State<MobileLayout> {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return CreateServicePopUp();
+              return CreateServiceDialog();
             });
         break;
       case 2:
