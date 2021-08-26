@@ -1,13 +1,15 @@
+import 'package:agenda/authenticator.dart';
 import 'package:agenda/src/features/service/models/service.dart';
-import 'package:agenda/utils/navigator.dart';
+import 'package:agenda/src/features/service/widgets/checkbox_tile.dart';
 import 'package:flutter/material.dart';
 
-import 'package:agenda/src/features/service/repositories/service.dart';
+import 'package:agenda/repositories/service.dart';
 
 class ServiceListPage extends StatefulWidget {
-  const ServiceListPage(
-      {Key? key, this.selectedServices = const []})
+  // Essa página não escolhe os services, apenas cadastra e edita.
+  const ServiceListPage({Key? key, this.selectedServices = const []})
       : super(key: key);
+  final String uid = '0000';
   final List<ServiceModel> selectedServices;
 
   @override
@@ -15,34 +17,9 @@ class ServiceListPage extends StatefulWidget {
 }
 
 class _ServiceListPageState extends State<ServiceListPage> {
-  late final ServiceRepository repository;
-
-  List<ServiceModel> selectedServices = [];
-
-  onAdd(ServiceModel e) {
-    selectedServices.add(e);
-  }
-
-  onRemove(ServiceModel e) {
-    selectedServices.add(e);
-  }
-
-  @override
-  void initState() {
-    
-    selectedServices = widget.selectedServices;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          pop(context, selectedServices);
-        },
-        child: Icon(Icons.check),
-      ),
       appBar: AppBar(
         title: Text('Serviços'),
         actions: [
@@ -51,9 +28,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return CreateServicePopUp(
-                        repository: repository,
-                      );
+                      return CreateServicePopUp();
                     });
               },
               icon: Icon(Icons.add))
@@ -61,7 +36,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
       ),
       body: SafeArea(
         child: StreamBuilder<List<ServiceModel>>(
-          stream: repository.read(),
+          stream: ServiceRepository.readAll(Authenticator.of(context).id),
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return Center(
@@ -71,11 +46,8 @@ class _ServiceListPageState extends State<ServiceListPage> {
             final List<ServiceModel> l = snapshot.data ?? [];
             return ListView(
               children: l
-                  .map((e) => ServiceCheckboxTile(
-                    repository: repository,
+                  .map((e) => ServiceListTile(
                         service: e,
-                        onAdd: () => onAdd(e),
-                        onRemove: () => onRemove(e),
                       ))
                   .toList(),
             );
@@ -86,58 +58,25 @@ class _ServiceListPageState extends State<ServiceListPage> {
   }
 }
 
-class ServiceCheckboxTile extends StatefulWidget {
-  const ServiceCheckboxTile(
-      {Key? key,
-      required this.service,
-      required this.onAdd,
-      required this.repository,
-      required this.onRemove})
-      : super(key: key);
+class ServiceListTile extends StatelessWidget {
   final ServiceModel service;
-  final VoidCallback onAdd;
-  final VoidCallback onRemove;
-  final ServiceRepository repository;
 
-
-  @override
-  _ServiceCheckboxTileState createState() => _ServiceCheckboxTileState();
-}
-
-class _ServiceCheckboxTileState extends State<ServiceCheckboxTile> {
-  bool _checked = false;
+  const ServiceListTile({Key? key, required this.service}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: (){
-        showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CreateServicePopUp(
-                        repository: widget.repository,
-                        // serviceModel: widget.service,
-                      );
-                    });
-      },
-      leading: widget.service.value == -1
+      leading: service.value == -1
           ? Icon(
               Icons.warning,
               color: Colors.yellow[800],
             )
           : null,
-      title: Text(widget.service.title),
-      subtitle: Text(widget.service.value == -1
-          ? 'Não fornecido'
-          : widget.service.value.toStringAsFixed(2)),
-      trailing: Checkbox(
-        onChanged: (v) {
-          if (v != null) v ? widget.onAdd() : widget.onRemove();
-          setState(() {
-            _checked = v ?? _checked;
-          });
-        },
-        value: _checked,
+      title: Text(service.title),
+      subtitle: Text(
+        service.value == -1
+            ? 'Não fornecido'
+            : service.value.toStringAsFixed(2),
       ),
     );
   }
@@ -146,21 +85,17 @@ class _ServiceCheckboxTileState extends State<ServiceCheckboxTile> {
 class CreateServicePopUp extends StatelessWidget {
   CreateServicePopUp({
     Key? key,
-    required this.repository,
     // this.serviceModel,
   }) : super(key: key);
-  final ServiceRepository repository;
   // final ServiceModel? serviceModel;
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController get titleController =>
-      TextEditingController(
-        // text: serviceModel?.title
-        );
-  TextEditingController get valueController =>
-      TextEditingController(
-        // text: serviceModel?.value.toString()
-        );
+  TextEditingController get titleController => TextEditingController(
+      // text: serviceModel?.title
+      );
+  TextEditingController get valueController => TextEditingController(
+      // text: serviceModel?.value.toString()
+      );
 
   ServiceModel get service => ServiceModel(
         title: titleController.text,
@@ -209,8 +144,9 @@ class CreateServicePopUp extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     child: Text("Adicionar"),
-                    onPressed: () {
-                      repository.create(service);
+                    onPressed: () async {
+                      final uid = Authenticator.of(context).id;
+                      ServiceRepository.create(uid, service);
                     },
                   ),
                 )

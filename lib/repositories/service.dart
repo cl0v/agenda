@@ -3,34 +3,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 const String serviceFirestoreCollection = 'service';
 
-abstract class IServiceRepository {
-  Future<void> create(ServiceModel m); // Ou id caso eu precise
-  Stream<List<ServiceModel>> read(String id);
-  Future<void> update(ServiceModel m);
-  Future<void> delete(String id);
-}
-
 class ServiceRepository {
   final String uid;
 
   ServiceRepository(this.uid);
-  @override
-  Future<void> create(ServiceModel m) {
+  static Future<void> create(String uid, ServiceModel m) {
     return FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
         .collection(serviceFirestoreCollection)
-        .add(m.toMap()..addEntries([MapEntry('uid', uid)]));
+        .add(m.toMap());
   }
 
-  @override
-  Future<void> delete(String id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<List<ServiceModel>> read() {
+  static Stream<List<ServiceModel>> readAll(String uid) {
     return FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
         .collection(serviceFirestoreCollection)
-        .where('uid', isEqualTo: uid)
         .snapshots()
         .map((q) => q.docs.map((e) => ServiceModel.fromMap(e.data())).toList());
   }

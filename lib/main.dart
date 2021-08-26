@@ -1,3 +1,4 @@
+import 'package:agenda/layout_mobile.dart';
 import 'package:agenda/utils/navigator.dart';
 import 'package:agenda/src/features/calendar/pages/calendar.dart';
 import 'package:agenda/user_auth.dart';
@@ -30,7 +31,7 @@ class CalendarApp extends StatelessWidget {
         title: 'Agenda',
         home: kIsWeb && !kDebugMode
             ? AppDownloadBannerPage()
-            : TodayAppointmentListPage(),
+            : MobileLayout(),
         debugShowCheckedModeBanner: false,
       ),
     );
