@@ -11,6 +11,9 @@ import 'authenticator.dart';
 import 'src/features/appointment/pages/appointment_page.dart';
 import 'src/features/calendar/pages/create_calendar_data.dart';
 
+
+Color get kPrimaryColor => Colors.blueAccent[200]!;
+
 //TODO: Testar se no celular ta criando toda hora o user anonimo
 
 Future<void> main() async {
