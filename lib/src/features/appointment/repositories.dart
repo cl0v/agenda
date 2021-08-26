@@ -22,18 +22,16 @@ class AppointmentRepository {
   }
 
   static Stream<List<Appointment>> todayAppointments(String uid) {
-    
     //TODO: Trocar isso para stream
     return FirebaseFirestore.instance
         .collection('user')
         .doc(uid)
         .collection(appointmentFirestoreCollection)
-        .where('date.day', isEqualTo: DateTime.now().day)
+        .where('date.day', isEqualTo: DateTime.now().day -1)
         .where('date.month', isEqualTo: DateTime.now().month)
         .where('date.year', isEqualTo: DateTime.now().year)
         .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Appointment.fromMap(e.data())).toList());
+        .map((event) => event.docs.map((e) => Appointment.fromMap(e.data())).toList());
   }
 }
 

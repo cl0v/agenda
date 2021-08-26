@@ -1,6 +1,6 @@
 import 'package:agenda/src/features/appointment/models.dart';
 import 'package:agenda/src/features/appointment/widgets/create_button.dart';
-import 'package:agenda/src/features/service/pages/service_list.dart';
+import 'package:agenda/src/features/service/widgets/list_tile.dart';
 import 'package:agenda/utils/navigator.dart';
 import 'package:flutter/material.dart';
 

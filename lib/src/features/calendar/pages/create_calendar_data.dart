@@ -1,7 +1,7 @@
 import 'package:agenda/src/features/calendar/models/calendar_data.dart';
 import 'package:agenda/src/features/service/models/service.dart';
 import 'package:agenda/utils/navigator.dart';
-import 'package:agenda/src/features/service/pages/service_list.dart';
+import 'package:agenda/src/features/service/widgets/list_tile.dart';
 import 'package:agenda/src/features/calendar/repositories/calendar_data.dart';
 import 'package:flutter/material.dart';
 
@@ -55,12 +55,12 @@ class _CrateCalendarDataPageState extends State<CrateCalendarDataPage> {
             ),
             ListTile(
               onTap: () async {
-                List<ServiceModel> r = await push(
-                        context,
-                        ServiceListPage(
-                          selectedServices: selectedService,
-                        )) ??
-                    [];
+                // List<ServiceModel> r = await push(
+                        // context,
+                        // ServiceListPage(
+                        //   selectedServices: selectedService,
+                        // )) ??
+                    // [];
 
                 // setState(() {
                 //   selectedService = r ?? selectedService;

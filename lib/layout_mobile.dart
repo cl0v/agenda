@@ -1,5 +1,8 @@
-import 'package:agenda/src/features/service/pages/service_list.dart';
-import 'package:agenda/src/features/appointment/pages/appointment_page.dart';
+import 'package:agenda/pages/agenda.dart';
+import 'package:agenda/pages/history.dart';
+import 'package:agenda/pages/profile.dart';
+import 'package:agenda/pages/services.dart';
+import 'package:agenda/src/features/service/widgets/list_tile.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';
@@ -14,18 +17,81 @@ class MobileLayout extends StatefulWidget {
 }
 
 class _MobileLayoutState extends State<MobileLayout> {
+  PageController controller = PageController();
+  int _currentIndex = 0;
+  onTap(int index) {
+    //TODO: Todas as vezes que mudo de página isso da reload. (O que faz ler mais uma porrada no banco)
+    if (_currentIndex == index) return;
+    _currentIndex = index;
+
+    // switch (index) {
+    //   case 0:
+
+    //     break;
+    //   case 1:
+    //     break;
+    //   case 2:
+    //     break;
+    //   case 3:
+    //     break;
+    //   default:
+    // }
+
+    controller.animateToPage(index,
+        duration: Duration(milliseconds: 250), curve: Curves.ease);
+  }
+
+  String get fabTooltip {
+    switch (_currentIndex) {
+      case 0:
+        return 'Adicionar atendimento';
+      case 1:
+        return 'Adicionar serviço';
+      default:
+        return '';
+    }
+  }
+
+  onFabPressed() {
+    switch (_currentIndex) {
+      case 0:
+        push(context, CreateAppointmentPage());
+        //Sisteminha de popup é delicinha e rapido
+        break;
+      case 1:
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CreateServicePopUp();
+            });
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TodayAppointmentListPage(),
+      body: PageView(controller: controller, children: [
+        AgendaPage(),
+        ServicesPage(),
+        // TODO: Talvez não vale a pena oferecer o serviço de historico agora.
+        // HistoryPage(),
+        ProfilePage()
+      ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => push(context, CreateAppointmentPage()),
-        tooltip: 'Adicionar atendimento',
+        onPressed: onFabPressed,
+        tooltip: fabTooltip,
         child: Icon(Icons.add),
         elevation: 2.0,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
+        //TODO: Adicionar indicador de qual página está
         child: SizedBox(
           height: 60,
           child: Row(
@@ -33,29 +99,31 @@ class _MobileLayoutState extends State<MobileLayout> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               BottomIconButton(
-                icon: Icons.calendar_today,
-                onTap: () {},
-                label: 'Calendário',
+                icon: Icons.home,
+                onTap: () => onTap(0),
+                label: 'Agenda',
               ),
               BottomIconButton(
                 icon: Icons.list,
-                onTap: () {},
+                onTap: () => onTap(1),
                 label: 'Serviços',
               ),
-               IconButton(
+              IconButton(
                   onPressed: null,
                   icon: Icon(Icons.nature, color: Colors.transparent)),
-              BottomIconButton(
-                icon: Icons.history,
-                onTap: () {},
-                label: 'Histórico',
-              ),
+              IconButton(
+                  onPressed: null,
+                  icon: Icon(Icons.nature, color: Colors.transparent)),
+              // BottomIconButton(
+              //   icon: Icons.history,
+              //   onTap: () => onTap(2),
+              //   label: 'Histórico',
+              // ),
               BottomIconButton(
                 icon: Icons.person,
-                onTap: () {},
+                onTap: () => onTap(2),
                 label: 'Perfil',
               ),
-             
             ],
           ),
         ),
@@ -71,32 +139,38 @@ class BottomIconButton extends StatelessWidget {
   const BottomIconButton({
     Key? key,
     required this.icon,
-    required this.label,
+    this.label,
     required this.onTap,
   }) : super(key: key);
 
   final IconData icon;
-  final String label;
+  final String? label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-        onPressed: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
+      onPressed: onTap,
+      child: label != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: Colors.white,
+                ),
+                Text(
+                  label!,
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            )
+          : Icon(
               icon,
               color: Colors.white,
             ),
-            Text(
-              label,
-              style: TextStyle(color: Colors.white),
-            )
-          ],
-        ));
+    );
   }
 }
 
@@ -113,7 +187,7 @@ class _BottomNavBar extends StatelessWidget {
           // push to Calendario
           //TODO: O calendário exibe apenas quais e quantas tem no dia (Aquele antigo é melhor pra isso)
           case 1:
-            push(context, ServiceListPage());
+            // push(context, ServiceListPage());
             //TODO: Página de servicos vai listar os serviços cadastrados e suas variações
             break;
           case 2:

@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'authenticator.dart';
-import 'src/features/appointment/pages/appointment_page.dart';
 import 'src/features/calendar/pages/create_calendar_data.dart';
 
 
