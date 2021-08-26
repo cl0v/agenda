@@ -1,4 +1,4 @@
-import 'package:agenda/authenticator.dart';
+import 'package:agenda/authenticator_provider.dart';
 import 'package:agenda/src/features/appointment/repositories.dart';
 import 'package:agenda/src/features/appointment/widgets/appointment_tile.dart';
 import 'package:flutter/material.dart';

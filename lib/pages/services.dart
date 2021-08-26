@@ -3,7 +3,7 @@ import 'package:agenda/src/features/service/models/service.dart';
 import 'package:agenda/src/features/service/widgets/list_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../authenticator.dart';
+import '../authenticator_provider.dart';
 
 class ServicesPage extends StatelessWidget {
   const ServicesPage({ Key? key }) : super(key: key);

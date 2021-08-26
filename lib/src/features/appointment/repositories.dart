@@ -27,7 +27,7 @@ class AppointmentRepository {
         .collection('user')
         .doc(uid)
         .collection(appointmentFirestoreCollection)
-        .where('date.day', isEqualTo: DateTime.now().day -1)
+        .where('date.day', isEqualTo: DateTime.now().day)
         .where('date.month', isEqualTo: DateTime.now().month)
         .where('date.year', isEqualTo: DateTime.now().year)
         .snapshots()

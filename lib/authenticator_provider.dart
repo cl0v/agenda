@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 
 class Authenticator extends InheritedWidget {
   Authenticator(
-    this._id, {
+    {
     required Widget child,
   }) : super(child: child) {
-    // _id = FirebaseAuth.instance.currentUser!.uid;
-    // Deixar o id do user como o uid mesmo, vai facilitar tudo, futuramente,
-    // se necessario mudar.
-    // _id = 'Meunovoid';
+    _id = FirebaseAuth.instance.currentUser?.uid ?? 'MeuIdMonstro';
   }
-   final String _id;
+  late final String _id;
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;

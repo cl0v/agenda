@@ -5,7 +5,7 @@ import 'package:agenda/src/features/service/widgets/create_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';
-import 'src/features/appointment/pages/create_appointment_page.dart';
+import 'src/features/appointment/widgets/create_dialog.dart';
 import 'utils/navigator.dart';
 
 class MobileLayout extends StatefulWidget {
@@ -51,10 +51,20 @@ class _MobileLayoutState extends State<MobileLayout> {
     }
   }
 
+
+
+//https://pub.dev/packages/rflutter_alert
+//https://pub.dev/packages/flutter_beautiful_popup
   onFabPressed() {
     switch (_currentIndex) {
       case 0:
-        push(context, CreateAppointmentPage());
+
+       showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CreateAppointmentDialog();
+            });
+        // push(context, CreateAppointmentPage());
         //Sisteminha de popup é delicinha e rapido
         break;
       case 1:
@@ -97,12 +107,12 @@ class _MobileLayoutState extends State<MobileLayout> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              BottomIconButton(
+              _BottomIconButton(
                 icon: Icons.home,
                 onTap: () => onTap(0),
                 label: 'Agenda',
               ),
-              BottomIconButton(
+              _BottomIconButton(
                 icon: Icons.list,
                 onTap: () => onTap(1),
                 label: 'Serviços',
@@ -118,7 +128,7 @@ class _MobileLayoutState extends State<MobileLayout> {
               //   onTap: () => onTap(2),
               //   label: 'Histórico',
               // ),
-              BottomIconButton(
+              _BottomIconButton(
                 icon: Icons.person,
                 onTap: () => onTap(2),
                 label: 'Perfil',
@@ -134,8 +144,8 @@ class _MobileLayoutState extends State<MobileLayout> {
   }
 }
 
-class BottomIconButton extends StatelessWidget {
-  const BottomIconButton({
+class _BottomIconButton extends StatelessWidget {
+  const _BottomIconButton({
     Key? key,
     required this.icon,
     this.label,
@@ -190,7 +200,7 @@ class _BottomNavBar extends StatelessWidget {
             //TODO: Página de servicos vai listar os serviços cadastrados e suas variações
             break;
           case 2:
-            push(context, CreateAppointmentPage());
+            push(context, CreateAppointmentDialog());
             //TODO: vai para a página agendamento de um cliente
             // Criar uma hero que faz o navbar recolher e aparece apenas o botão fab no canto direito
             break;

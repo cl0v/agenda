@@ -3,7 +3,7 @@ import 'package:agenda/repositories/service.dart';
 import 'package:agenda/src/features/service/models/service.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../authenticator.dart';
+import '../../../../authenticator_provider.dart';
 
 class CreateServiceDialog extends StatelessWidget {
   CreateServiceDialog({

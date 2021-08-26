@@ -1,0 +1,100 @@
+import 'package:agenda/authenticator_provider.dart';
+import 'package:agenda/src/features/appointment/models.dart';
+import 'package:agenda/src/features/appointment/repositories.dart';
+import 'package:flutter/material.dart';
+
+class CreateAppointmentDialog extends StatefulWidget {
+  const CreateAppointmentDialog({Key? key}) : super(key: key);
+
+  @override
+  _CreateAppointmentDialogState createState() => _CreateAppointmentDialogState();
+}
+
+class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
+  final nameController = TextEditingController();
+  TimeOfDay time = TimeOfDay.now();
+
+  DateTime day = DateTime.now();
+
+  Appointment get _appointment {
+    final _day = DateTime(day.year, day.month, day.day, time.hour, time.minute);
+
+    return Appointment(
+        Horario.fromDateTime(_day), nameController.text, ['nenhum']);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Stack(
+        children: <Widget>[
+          Positioned(
+            right: -40.0,
+            top: -40.0,
+            child: InkResponse(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: CircleAvatar(
+                child: Icon(Icons.close),
+                backgroundColor: Colors.red,
+              ),
+            ),
+          ),
+          Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                //TODO: Cadastrar servicos
+                // TODO: Seletor por popup https://pub.dev/packages/smart_select
+                // ListTile(
+                //   title: Text('Serviços selecionados:'),
+                //   onTap: () => push(context, ServiceListPage()),
+                // ), //
+
+                ListTile(
+                  onTap: () async {
+                    time = await showTimePicker(
+                            context: context, initialTime: TimeOfDay.now()) ??
+                        time;
+                  },
+                  title: Text('Será agendados para as 18:00 horas'),
+                  subtitle: Text('Toque para escolher outro horário.'),
+                ),
+                ListTile(
+                  onTap: () async {
+                    day = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 30))) ??
+                        day;
+                  },
+                  title: Text('Será agendado para o dia 19/03'),
+                  subtitle: Text('Toque para escolher outro dia.'),
+                ),
+
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                      labelText: 'Nome', hintText: 'Nome do cliente'),
+                ),
+              
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    child: Text("Adicionar"),
+                    onPressed: () async {
+                      final userid = Authenticator.of(context).id;
+                      AppointmentRepository.create(userid, _appointment);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

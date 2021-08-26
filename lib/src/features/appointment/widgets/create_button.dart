@@ -1,4 +1,4 @@
-import 'package:agenda/authenticator.dart';
+import 'package:agenda/authenticator_provider.dart';
 import 'package:agenda/src/features/appointment/models.dart';
 import 'package:flutter/material.dart';
 

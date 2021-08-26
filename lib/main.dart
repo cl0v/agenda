@@ -7,13 +7,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'authenticator.dart';
+import 'authenticator_provider.dart';
 import 'src/features/calendar/pages/create_calendar_data.dart';
 
 
-Color get kPrimaryColor => Colors.blueAccent[200]!;
 
-//TODO: Testar se no celular ta criando toda hora o user anonimo
+//TODO: Adicionar TOAST avisando que foi criado com sucesso, ou houve falha ao criar
+//https://pub.dev/packages/bot_toast
+
+
+Color get kPrimaryColor => Colors.blueAccent[200]!;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +31,8 @@ Future<void> main() async {
 class CalendarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Authenticator('MeuIdMonstrao',
+    return Authenticator(
+      // 'MeuIdMonstrao',
       child: const MaterialApp(
         title: 'Agenda',
         home: kIsWeb && !kDebugMode
