@@ -1,13 +1,17 @@
 import 'package:agenda/authenticator_provider.dart';
 import 'package:agenda/src/features/appointment/models.dart';
 import 'package:agenda/src/features/appointment/repositories.dart';
+import 'package:agenda/utils/navigator.dart';
 import 'package:flutter/material.dart';
+
+//TODO: Implementar sistema automatico se seleção de data;
 
 class CreateAppointmentDialog extends StatefulWidget {
   const CreateAppointmentDialog({Key? key}) : super(key: key);
 
   @override
-  _CreateAppointmentDialogState createState() => _CreateAppointmentDialogState();
+  _CreateAppointmentDialogState createState() =>
+      _CreateAppointmentDialogState();
 }
 
 class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
@@ -54,6 +58,7 @@ class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
 
                 ListTile(
                   onTap: () async {
+                    //Usar o picker bonitin
                     time = await showTimePicker(
                             context: context, initialTime: TimeOfDay.now()) ??
                         time;
@@ -74,21 +79,41 @@ class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
                   subtitle: Text('Toque para escolher outro dia.'),
                 ),
 
+                ListTile(
+                  title: Text('Formar selecionados 3 serviços'),
+                  subtitle: Text('Toque para ver os serviços selecionados.'),
+                ),
+
                 TextFormField(
                   controller: nameController,
                   decoration: InputDecoration(
                       labelText: 'Nome', hintText: 'Nome do cliente'),
                 ),
-              
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    child: Text("Adicionar"),
-                    onPressed: () async {
-                      final userid = Authenticator.of(context).id;
-                      AppointmentRepository.create(userid, _appointment);
-                    },
-                  ),
+                Divider(),
+
+                Row(
+                  children: [
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                        child: Text("CANCELAR"),
+                        onPressed: () async {
+                          pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        child: Text("AGENDAR"),
+                        onPressed: () async {
+                          final userid = Authenticator.of(context).id;
+                          AppointmentRepository.create(userid, _appointment);
+                        },
+                      ),
+                    )
+                  ],
                 )
               ],
             ),
